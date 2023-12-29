@@ -7,6 +7,11 @@ This project consists of two main components: a Python script for training a Con
 
 ![image](https://github.com/JaredTweed/MINST-pytorch/assets/59375645/89ef7e3c-1eee-4aed-8514-1bc2b46d6c27)
 
+To test it, download all the files from the repository onto the same folder, then run:
+```bash
+$ pip install pygame torch torchvision
+$ python train_model.py
+```
 
 ## Project Structure
 
