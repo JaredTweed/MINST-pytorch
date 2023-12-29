@@ -10,7 +10,7 @@ This project consists of two main components: a Python script for training a Con
 To test it, download all the files from the repository onto the same folder, then run:
 ```bash
 $ pip install pygame torch torchvision
-$ python train_model.py
+$ python drawing_app.py
 ```
 
 ## Project Structure
