@@ -5,19 +5,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-# Data Augmentation
-transform = transforms.Compose([
-    transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
-])
-
-# Load the Dataset
-trainset = torchvision.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
-testset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=False)
-
 # Define the Convolutional Neural Network
 class Net(nn.Module):
     def __init__(self):
@@ -59,42 +46,60 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-net = Net()
+def train_and_save():
+    # Data Augmentation
+    transform = transforms.Compose([
+        transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5,), (0.5,))
+    ])
 
-# Optimizer and Learning Rate Scheduler
-optimizer = optim.Adam(net.parameters(), lr=0.001)
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.9)
+    # Load the Dataset
+    trainset = torchvision.datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+    testset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=False)
 
-# Training the Network
-for epoch in range(15):
-    running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
-        inputs, labels = data
-        optimizer.zero_grad()
+    net = Net()
 
-        outputs = net(inputs)
-        loss = nn.CrossEntropyLoss()(outputs, labels)
-        loss.backward()
-        optimizer.step()
+    # Optimizer and Learning Rate Scheduler
+    optimizer = optim.Adam(net.parameters(), lr=0.001)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.9)
 
-        running_loss += loss.item()
-        if i % 100 == 99:
-            print(f'Epoch: {epoch + 1}, Batch: {i + 1}, Average Loss: {running_loss / 100:.3f}')
-            running_loss = 0.0
-    scheduler.step()
-print('Finished Training')
+    # Training the Network
+    for epoch in range(15):
+        running_loss = 0.0
+        for i, data in enumerate(trainloader, 0):
+            inputs, labels = data
+            optimizer.zero_grad()
 
-# Testing the Network
-correct = 0
-total = 0
-with torch.no_grad():
-    for data in testloader:
-        images, labels = data
-        outputs = net(images)
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-print(f'Accuracy of the network on the 10000 test images: {100 * correct / total:.3f} %')
+            outputs = net(inputs)
+            loss = nn.CrossEntropyLoss()(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-# Save the Network
-torch.save(net.state_dict(), './mnist_net.pth')
+            running_loss += loss.item()
+            if i % 100 == 99:
+                print(f'Epoch: {epoch + 1}, Batch: {i + 1}, Average Loss: {running_loss / 100:.3f}')
+                running_loss = 0.0
+        scheduler.step()
+    print('Finished Training')
+
+    # Testing the Network
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data in testloader:
+            images, labels = data
+            outputs = net(images)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+    print(f'Accuracy of the network on the 10000 test images: {100 * correct / total:.3f} %')
+
+    # Save the Network
+    torch.save(net.state_dict(), './mnist_net.pth')
+
+# Train the model only if this file is run directly rather than imported
+if __name__ == "__main__":
+    train_and_save()
