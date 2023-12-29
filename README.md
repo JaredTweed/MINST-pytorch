@@ -3,6 +3,11 @@
 
 This project consists of two main components: a Python script for training a Convolutional Neural Network (CNN) on the MNIST dataset and a drawing application built with Pygame that uses the trained model to predict handwritten digits.
 
+## Results
+
+![image](https://github.com/JaredTweed/MINST-pytorch/assets/59375645/89ef7e3c-1eee-4aed-8514-1bc2b46d6c27)
+
+
 ## Project Structure
 
 - `train_model.py`: Contains the code for defining, training, and saving the CNN model.
