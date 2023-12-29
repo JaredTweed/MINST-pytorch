@@ -12,14 +12,14 @@ net.eval()
 
 # Initialize Pygame
 pygame.init()
-width, height = 280, 280
+width, height = 560, 560
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("MNIST Digit Recognizer")
 
 # Drawing parameters
 drawing = False
 last_pos = None
-radius = 10
+pen_radius = 10
 color = (255, 255, 255)  # White
 bg_color = (0, 0, 0)  # Black
 
@@ -64,7 +64,7 @@ while running:
             drawing = False
         elif event.type == pygame.MOUSEMOTION and drawing:
             current_pos = pygame.mouse.get_pos()
-            draw_line(screen, last_pos, current_pos, radius, color)
+            draw_line(screen, last_pos, current_pos, pen_radius, color)
             last_pos = current_pos
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_c:  # Clear screen
@@ -78,6 +78,6 @@ while running:
         img_data = pygame.surfarray.array3d(screen)
         img_data = np.transpose(img_data, (1, 0, 2))
         prediction = predict_digit(img_data)
-        pygame.display.set_caption(f"MNIST Digit Recognizer - Prediction: {prediction}")
+        pygame.display.set_caption(f"Prediction: {prediction}, Press 'c' to clear.")
 
 pygame.quit()
