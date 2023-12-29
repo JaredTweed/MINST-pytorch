@@ -18,10 +18,10 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
 testset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=64, shuffle=False)
 
-# Enhanced Neural Network
-class EnhancedNet(nn.Module):
+# Define the Convolutional Neural Network
+class Net(nn.Module):
     def __init__(self):
-        super(EnhancedNet, self).__init__()
+        super(Net, self).__init__()
         # First Convolutional Block with Residual Connection
         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
         self.conv2 = nn.Conv2d(32, 32, kernel_size=3, padding=1)
@@ -59,7 +59,7 @@ class EnhancedNet(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-net = EnhancedNet()
+net = Net()
 
 # Optimizer and Learning Rate Scheduler
 optimizer = optim.Adam(net.parameters(), lr=0.001)
